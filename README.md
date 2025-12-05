@@ -14,4 +14,8 @@ Initiating a loop that iterates row by row over the DataFrame df.
 Executing the insert_query for the current row by passing the tuple of columns as values by checking wheteher data is missing and Nan data to be handled by None.
 Committing the changes (the inserted rows) to the MySQL database.
 
-
+In the py file:
+I have imported the essential libraries.Then I have created a database connection for mysql.
+Then I have created a function called fetchdata(select_query) to execute the SQL select_query. 
+Post this the the result is stored in a Dataframe.
+Then the Streamlit UI setup along with the Bar chart representation and the Advanced Queries selectbox for analysing the different scenario outcomes.
