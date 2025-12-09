@@ -116,11 +116,9 @@ fig_gender = px.bar(
 
 
 with tab1:
-    st.header("Stops By Violation Type")
     st.plotly_chart(fig_violation, use_container_width=False)
 
 with tab2:
-    st.header("Driver Gender distribution in each country ")
     st.plotly_chart(fig_gender, use_container_width=False)
 
 
