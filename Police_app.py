@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import pymysql
 import plotly.express as px
+from datetime import date
 
 #Database Connection
 
@@ -37,6 +38,8 @@ def fetch_data(select_query):
     else:
         return pd.DataFrame()
 
+
+
 #Streamlit UI Setup
 
 st.set_page_config(page_title="Traffic Police Dashboard",layout="wide")
@@ -44,8 +47,8 @@ st.title("👮‍♂️ SecureCheck: A Python-SQL Digital Ledger for Police Post
 st.divider()
 
 
-df = pd.read_csv("traffic_stops.csv")
 
+df = pd.read_csv("traffic_stops.csv")
 
 #Quick Metrics
 st.header("📊 Key Metrics")
@@ -68,26 +71,58 @@ with col4:
     st.metric("Drug Related Stops", drugs_related_stop)
 
 
-# Sample traffic police logs data
-data = {
+#Visual Representation of traffic police logs data
+# Display bar chart in Streamlit
+
+
+st.header("📈 Visual Insights")
+tab1, tab2 = st.tabs(["Insights based on Violation", "Insights based on Driver Gender"])
+
+
+
+violation_type = {
     'Violation Type': ['Speeding', 'Signal', 'DUI', 'Other', 'Seatbelt'],
     'Count': [26300, 26224, 26150, 26388,26014]
 }
-df1 = pd.DataFrame(data)
+df_violation = pd.DataFrame(violation_type)
 
-st.title("Traffic Violation Police Logs")
 
-# colorful bar chart with Plotly
-fig = px.bar(
-    df1,
+gender_distribution={
+    'Country Name': ['Canada (Male)','India (Male)','USA (Male)','Canada (Female)','USA (Female)','India (Female)'],
+    'Driver Gender Distribution': [21822, 21910, 21582, 21994,21682,22086],
+    'Gender':['Male','Male','Male','Female','Female','Female']
+}
+df_gender=pd.DataFrame(gender_distribution)
+
+
+fig_violation = px.bar(
+    df_violation,
     x='Violation Type',
     y='Count',
     color='Violation Type',
-    color_discrete_sequence=px.colors.qualitative.Safe
+    color_discrete_sequence=px.colors.qualitative.Safe,
+    title="Stops Based On different Violations"
 )
 
-# Display bar chart in Streamlit
-st.plotly_chart(fig, use_container_width=False)
+
+fig_gender = px.bar(
+    df_gender,
+    x='Country Name',
+    y='Driver Gender Distribution',
+    color='Gender',
+    color_discrete_sequence=px.colors.qualitative.Safe,
+    title="Gender Distribution Across Countries"
+)
+
+
+with tab1:
+    st.header("Stops By Violation Type")
+    st.plotly_chart(fig_violation, use_container_width=False)
+
+with tab2:
+    st.header("Driver Gender distribution in each country ")
+    st.plotly_chart(fig_gender, use_container_width=False)
+
 
 #Advanced Queries
 
@@ -151,6 +186,7 @@ st.divider()
 
 
 st.header("📋 Display the Predicted outcome and Violation")
+st.text("✍️Fill in the details below to predict the outcome based on the existing data.")
 
 # Input form for all fields(excluding outputs)
 with st.form("new_log_form"):
@@ -165,8 +201,6 @@ with st.form("new_log_form"):
     stop_duration = st.selectbox("Stop Duration",df['stop_duration'].dropna().unique())
     vehicle_number = st.text_input("Vehicle Number")
     timestamp = pd.Timestamp.now()
-    
-
     
 
 # Filtered data for prediction
@@ -201,3 +235,7 @@ with st.form("new_log_form"):
                     stop duration: **{stop_duration}**.
                     Vehicle Number: **{vehicle_number}**.
                     """)
+
+st.divider()
+st.header("📚 Police Checkpost Logs Overview")
+st.write(df)
