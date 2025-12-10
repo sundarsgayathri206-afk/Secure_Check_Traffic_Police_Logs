@@ -160,7 +160,7 @@ select_query={
   "Average stop duration for different violation" :"select violation, avg(stop_duration) from traffic_analysis group by violation;",
   "Night stops likely to lead to arrests":"select case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end as 'arrest_time', count(*)as total_arrests from traffic_analysis where is_arrested='1' group by case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end;",
   "Is there a violation that rarely results in search or arrest?": "select violation, SUM(CASE WHEN search_conducted = True then 1 else 0 end) as total_search, SUM(CASE WHEN is_arrested = TRUE THEN 1 ELSE 0 END) AS total_arrests from traffic_analysis group by violation;",
-  "Which violations are most common among younger drivers (<25)":"select violation, count(*) as cSount from traffic_analysis where driver_age < 25 group by violation;",
+  "Which violations are most common among younger drivers (<25)":"select violation, count(*) as count from traffic_analysis where driver_age < 25 group by violation;",
   "Violation that are associated with search or arrest":"select violation, count(*) as total_arrest from traffic_analysis where stop_outcome like '%arrest%'group by violation;",
   "Countries with highest rate of drug related stops":"select country_name, count(*) as highest_drug_related_stop from traffic_analysis where drugs_related_stop='1' group by country_name order by Highest_drug_related_stop desc;",
   "Arrest rate by country and violation":"select country_name, violation,round(sum(case when is_arrested = True then 1 else 0 end)*100/count(*), 2) as arrest_rate from traffic_analysis group by country_name, violation order by violation;",
@@ -238,4 +238,5 @@ st.divider()
 st.header("📚 Police Checkpost Logs Overview")
 
 st.write(df)
+
 
