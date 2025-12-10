@@ -158,7 +158,7 @@ select_query={
   "Gender that has highest search rate":"select driver_gender, count(*) as search_rate from traffic_analysis where search_conducted=True group by driver_gender order by search_rate desc;",
   "Time of the day that has the most traffic stops":"select stop_time, count(*) as most_traffic_stops from traffic_analysis group by stop_time order by most_traffic_stops desc limit 5;",
   "Average stop duration for different violation" :"select violation, avg(stop_duration) from traffic_analysis group by violation;",
-  "Night stops likely to lead to arrests":"select case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end as 'arrest', count(*)as total_stops from traffic_analysis where search_conducted='1' group by case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end;",
+  "Night stops likely to lead to arrests":"select case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end as 'arrest_time', count(*)as total_arrests from traffic_analysis where is_arrested='1' group by case when stop_time between '06:00:00' and '18:00:00' then 'day' else 'night' end;",
   "Is there a violation that rarely results in search or arrest?": "select violation, SUM(CASE WHEN search_conducted = True then 1 else 0 end) as total_search, SUM(CASE WHEN is_arrested = TRUE THEN 1 ELSE 0 END) AS total_arrests from traffic_analysis group by violation;",
   "Which violations are most common among younger drivers (<25)":"select violation, count(*) as cSount from traffic_analysis where driver_age < 25 group by violation;",
   "Violation that are associated with search or arrest":"select violation, count(*) as total_arrest from traffic_analysis where stop_outcome like '%arrest%'group by violation;",
@@ -238,3 +238,4 @@ st.divider()
 st.header("📚 Police Checkpost Logs Overview")
 
 st.write(df)
+
