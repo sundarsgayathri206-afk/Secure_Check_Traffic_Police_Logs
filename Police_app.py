@@ -166,7 +166,7 @@ select_query={
   "Arrest rate by country and violation":"select country_name, violation,round(sum(case when is_arrested = True then 1 else 0 end)*100/count(*), 2) as arrest_rate from traffic_analysis group by country_name, violation order by violation;",
   "Country with most stops with search conducted":"select country_name, count(*) as total_stops from traffic_analysis where search_conducted= True group by country_name order by total_stops desc;",
   "Yearly Breakdown of Stops and Arrests by Country(Using Subquery and Window Functions)":"select country_name, yearly_breakdown, SUM(total_stops) OVER (PARTITION BY country_name) AS total_stops, SUM(total_arrests) OVER (PARTITION BY country_name) AS total_arrests from (select country_name, count(*) as total_stops, extract(year from stop_date) as yearly_breakdown, sum(case when is_arrested = True then 1 else 0 end) as total_arrests from traffic_analysis group by country_name, extract(year from stop_date)) as yearly_data order by country_name, yearly_breakdown;",
-  "Driver Violation Trends Based on Age (Join with Subquery)": "select distinct v.violation, ta.driver_age from traffic_analysis ta join (select driver_age, count(*) as violation from traffic_analysis group by driver_age) as v on ta.driver_age = v.driver_age order by v.violation desc;",
+  "Driver Violation Trends Based on Age (Join with Subquery)": "select distinct v.violation_count, ta.driver_age from traffic_analysis ta join (select driver_age, count(*) as violation_count from traffic_analysis group by driver_age) as v on ta.driver_age = v.driver_age order by v.violation_count desc;",
   "Time Period Analysis of Stops (Joining with Date Functions), Number of Stops by Year, Month, Hour of the Day":"select year(stop_date) as stop_year, month(stop_date) as stop_month, hour(stop_time) as stop_hour, count(*) as Number_of_stops from traffic_analysis group by stop_year, stop_month, stop_hour;",
   "Violations with High Search and Arrest Rates (Window Function)":"select violation, count(*) as total_stops, sum(case when search_conducted = True then 1 else 0 end) as total_search, sum(case when is_arrested = True then 1 else 0 end) as total_arrest, rank() over (order by sum(case when search_conducted = True then 1 else 0 end)* 1.0 / Count(*)) as search, rank() over (order by sum(case when is_arrested = True then 1 else 0 end)* 1.0/ count(*)) as arrest from traffic_analysis group by violation;",
   "Driver Demographics by Country (Age, Gender)":"select country_name, driver_age, driver_gender,count(*) as total_drivers from traffic_analysis group by country_name, driver_age, driver_gender order by country_name, driver_age, driver_gender;",
@@ -238,5 +238,6 @@ st.divider()
 st.header("📚 Police Checkpost Logs Overview")
 
 st.write(df)
+
 
 
